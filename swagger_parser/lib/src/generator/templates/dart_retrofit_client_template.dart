@@ -62,19 +62,37 @@ String _toClientRequest(UniversalRequest request, String defaultContentType) {
   return sb.toString();
 }
 
-String _fileImport(UniversalRestClient restClient) => restClient.requests.any(
-      (r) => r.parameters.any(
-        (e) =>
-            e.type
-                .toSuitableType(ProgrammingLanguage.dart)
-                .startsWith('File') ||
-            e.type
-                .toSuitableType(ProgrammingLanguage.dart)
-                .startsWith('List<File'),
-      ),
-    )
-        ? "import 'dart:io';\n\n"
-        : '';
+String _fileImport(UniversalRestClient restClient) {
+  final hasFile = restClient.requests.any(
+    (r) => r.parameters.any(
+      (e) =>
+          e.type.toSuitableType(ProgrammingLanguage.dart).startsWith('File') ||
+          e.type
+              .toSuitableType(ProgrammingLanguage.dart)
+              .startsWith('List<File'),
+    ),
+  );
+
+  final hasMultiPart = restClient.requests.any(
+    (r) => r.parameters.any(
+      (e) => e.type
+          .toSuitableType(ProgrammingLanguage.dart)
+          .contains('MultipartFile'),
+    ),
+  );
+
+  var imports = '';
+
+  if (hasFile) {
+    imports += "import 'dart:io';\n\n";
+  }
+
+  if (hasMultiPart) {
+    imports += "import 'dart:convert';\n\n";
+  }
+
+  return imports;
+}
 
 String _toParameter(UniversalRequestType parameter) =>
     "    @${parameter.parameterType.type}(${parameter.name != null && !parameter.parameterType.isBody ? "${parameter.parameterType.isPart ? 'name: ' : ''}'${parameter.name}'" : ''}) "
