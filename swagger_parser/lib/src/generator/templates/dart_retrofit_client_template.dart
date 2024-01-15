@@ -73,13 +73,7 @@ String _fileImport(UniversalRestClient restClient) {
     ),
   );
 
-  final hasMultiPart = restClient.requests.any(
-    (r) => r.parameters.any(
-      (e) => e.type
-          .toSuitableType(ProgrammingLanguage.dart)
-          .contains('MultipartFile'),
-    ),
-  );
+  final hasMultiPart = restClient.requests.any((r) => r.isMultiPart);
 
   var imports = '';
 
