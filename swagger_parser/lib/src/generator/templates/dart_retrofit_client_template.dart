@@ -75,14 +75,10 @@ String _fileImport(UniversalRestClient restClient) {
 
   final sb = StringBuffer();
 
-  final hasMultiPart = restClient.requests.any((r) => r.isMultiPart);
-
   if (hasFile) {
-    sb.write("import 'dart:io';\n");
-  }
-
-  if (hasMultiPart) {
-    sb.write("import 'dart:convert';\n");
+    sb
+      ..write("import 'dart:io';\n")
+      ..write("import 'dart:convert';\n");
   }
 
   return sb.toString();
