@@ -73,19 +73,19 @@ String _fileImport(UniversalRestClient restClient) {
     ),
   );
 
+  final sb = StringBuffer();
+
   final hasMultiPart = restClient.requests.any((r) => r.isMultiPart);
 
-  var imports = '';
-
   if (hasFile) {
-    imports += "import 'dart:io';\n\n";
+    sb.write("import 'dart:io';\n");
   }
 
   if (hasMultiPart) {
-    imports += "import 'dart:convert';\n\n";
+    sb.write("import 'dart:convert';\n");
   }
 
-  return imports;
+  return sb.toString();
 }
 
 String _toParameter(UniversalRequestType parameter) =>
